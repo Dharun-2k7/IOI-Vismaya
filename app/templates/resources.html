@@ -1,34 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="hero" style="padding: 2rem 1rem;">
-    <h1>Learning Resources</h1>
-    <p>Curated materials to help you excel in Competitive Programming and algorithmic problem solving.</p>
+<div class="animate-up delay-1" style="text-align: center; margin-bottom: 3rem;">
+    <h1 style="font-size: 2.8rem; margin-bottom: 1rem;" class="text-gradient">Training Grounds</h1>
+    <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+        Level up your algorithm skills with the best resources available on the internet.
+    </p>
 </div>
 
-<div class="resources-grid">
-    <div class="card">
-        <h3 style="color: var(--primary-blue); border-bottom: 2px solid var(--highlight-yellow); padding-bottom: 0.5rem; margin-bottom: 1rem;">
-            Learning Guides & Algorithms
-        </h3>
+<div class="grid-2">
+    <div class="card animate-up delay-2" style="border-top: 4px solid var(--icpc-gold);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1.5rem;">📚 Theory & Algorithms</h3>
         <ul class="resource-list">
-            <li><a href="https://usaco.guide/" target="_blank">USACO Guide</a> - Comprehensive syllabus for CP</li>
-            <li><a href="https://cp-algorithms.com/" target="_blank">CP Algorithms</a> - In-depth algorithm explanations</li>
-            <li><a href="https://cses.fi/book/book.pdf" target="_blank">Competitive Programmer's Handbook</a> - Antti Laaksonen</li>
+            <li><a href="https://usaco.guide/" target="_blank">USACO Guide</a></li>
+            <li><a href="https://cp-algorithms.com/" target="_blank">CP Algorithms</a></li>
+            <li><a href="https://cses.fi/book/book.pdf" target="_blank">Competitive Programmer's Handbook</a></li>
             <li><a href="https://www.geeksforgeeks.org/fundamentals-of-algorithms/" target="_blank">GeeksforGeeks Algorithms</a></li>
         </ul>
     </div>
     
-    <div class="card">
-        <h3 style="color: var(--accent-red); border-bottom: 2px solid var(--highlight-yellow); padding-bottom: 0.5rem; margin-bottom: 1rem;">
-            Practice Platforms
-        </h3>
+    <div class="card animate-up delay-3" style="border-top: 4px solid var(--icpc-red);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1.5rem;">⚔️ Practice Arenas</h3>
         <ul class="resource-list">
-            <li><a href="https://codeforces.com/" target="_blank">Codeforces</a> - High quality contests and problemset</li>
-            <li><a href="https://atcoder.jp/" target="_blank">AtCoder</a> - Great for educational DP and math problems</li>
-            <li><a href="https://cses.fi/problemset/" target="_blank">CSES Problem Set</a> - Standard algorithm testing</li>
-            <li><a href="https://projecteuler.net/" target="_blank">Project Euler</a> - Mathematical challenges</li>
-            <li><a href="https://leetcode.com/" target="_blank">LeetCode</a> - Good for interview preparation</li>
+            <li><a href="https://codeforces.com/" target="_blank">Codeforces</a></li>
+            <li><a href="https://atcoder.jp/" target="_blank">AtCoder</a></li>
+            <li><a href="https://cses.fi/problemset/" target="_blank">CSES Problem Set</a></li>
+            <li><a href="https://projecteuler.net/" target="_blank">Project Euler</a></li>
+            <li><a href="https://leetcode.com/" target="_blank">LeetCode</a></li>
         </ul>
     </div>
 </div>

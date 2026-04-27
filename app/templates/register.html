@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="max-width: 500px; margin: 0 auto;">
-    <div class="card">
-        <h2 style="color: var(--primary-blue); text-align: center; margin-bottom: 1.5rem;">Register for ICPC Club</h2>
+<div style="max-width: 550px; margin: 0 auto;" class="animate-up delay-1">
+    <div class="card" style="border-top: 4px solid var(--icpc-red);">
+        <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;" class="text-gradient">Join ICPC Club</h2>
         
         <form method="POST" action="{{ url_for('main.register') }}">
-            <div class="form-group">
-                <label class="form-label" for="full_name">Full Name</label>
-                <input class="form-control" type="text" id="full_name" name="full_name" required>
+            <div class="grid-2" style="gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="full_name">Full Name</label>
+                    <input class="form-control" type="text" id="full_name" name="full_name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone Number</label>
+                    <input class="form-control" type="text" id="phone" name="phone" required>
+                </div>
             </div>
             
             <div class="form-group">
@@ -16,31 +22,27 @@
                 <input class="form-control" type="email" id="email" name="email" required>
             </div>
             
-            <div class="form-group">
-                <label class="form-label" for="phone">Phone Number</label>
-                <input class="form-control" type="text" id="phone" name="phone" required>
+            <div class="grid-2" style="gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="school">University / School</label>
+                    <input class="form-control" type="text" id="school" name="school" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="grade">Class / Year</label>
+                    <input class="form-control" type="text" id="grade" name="grade" required>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label class="form-label" for="school">University / School Name</label>
-                <input class="form-control" type="text" id="school" name="school" required>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label" for="grade">Class / Grade (e.g., Year 2 CS)</label>
-                <input class="form-control" type="text" id="grade" name="grade" required>
-            </div>
-            
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 0.5rem;">
                 <label class="form-label" for="password">Password</label>
                 <input class="form-control" type="password" id="password" name="password" required>
             </div>
             
-            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">Register</button>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 2rem;">Register Account</button>
         </form>
         
-        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
-            Already have an account? <a href="{{ url_for('main.login') }}" style="color: var(--primary-blue);">Login here</a>
+        <p style="text-align: center; margin-top: 2rem; color: var(--text-muted);">
+            Already registered? <a href="{{ url_for('main.login') }}" style="color: var(--icpc-gold); text-decoration: none; font-weight: 600;">Sign In</a>
         </p>
     </div>
 </div>

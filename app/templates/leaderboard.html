@@ -1,46 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <h2 style="color: var(--primary-blue); text-align: center; margin-bottom: 2rem;">Weekly Leaderboard</h2>
+<div class="card animate-up delay-1">
+    <h2 style="font-size: 2.5rem; text-align: center; margin-bottom: 1rem;" class="text-gradient">Global Leaderboard</h2>
     
     {% if problem %}
-        <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">
-            Current Active Problem: <strong>{{ problem.title }}</strong>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem;">
+            Ranking for: <strong style="color: white;">{{ problem.title }}</strong>
         </p>
         
         {% if leaderboard %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>University / School</th>
-                        <th>Points</th>
-                        <th>First Solve Time (UTC)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for entry in leaderboard %}
+            <div style="overflow-x: auto;">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td class="
-                                {% if loop.index == 1 %}rank-1{% endif %}
-                                {% if loop.index == 2 %}rank-2{% endif %}
-                                {% if loop.index == 3 %}rank-3{% endif %}
-                            ">
-                                #{{ loop.index }}
-                            </td>
-                            <td style="font-weight: 500;">{{ entry.name }}</td>
-                            <td>{{ entry.school }}</td>
-                            <td style="font-weight: bold; color: var(--primary-blue);">{{ entry.points }}</td>
-                            <td style="font-size: 0.9em; color: var(--text-muted);">{{ entry.solve_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <th>Rank</th>
+                            <th>Hacker</th>
+                            <th>University</th>
+                            <th>Points</th>
+                            <th>Time of First Solve (UTC)</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for entry in leaderboard %}
+                            <tr class="animate-up delay-{{ loop.index }}">
+                                <td class="
+                                    {% if loop.index == 1 %}rank-1{% endif %}
+                                    {% if loop.index == 2 %}rank-2{% endif %}
+                                    {% if loop.index == 3 %}rank-3{% endif %}
+                                ">
+                                    #{{ loop.index }}
+                                    {% if loop.index == 1 %} 👑{% endif %}
+                                </td>
+                                <td style="font-weight: 600; font-size: 1.1rem; color: white;">{{ entry.name }}</td>
+                                <td style="color: var(--text-muted);">{{ entry.school }}</td>
+                                <td style="font-weight: 800; color: var(--icpc-gold); font-size: 1.1rem;">{{ entry.points }}</td>
+                                <td style="font-family: monospace; color: var(--text-muted);">{{ entry.solve_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
-            <div class="alert alert-info" style="text-align: center;">
-                No one has solved the current problem yet. Be the first!
+            <div class="alert alert-info" style="text-align: center; padding: 3rem;">
+                <h3 style="margin-bottom: 1rem;">No one has solved it yet!</h3>
+                <p>Be the first to crack the code and claim the #1 spot.</p>
             </div>
         {% endif %}
         
