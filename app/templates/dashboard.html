@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>Welcome, <span style="color: var(--primary-blue);">{{ current_user.full_name }}</span></h2>
+    <div style="background: var(--highlight-yellow); padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold;">
+        Points: {{ current_user.points }}
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="problem-title">Weekly Problem</h3>
+    
+    {% if problem %}
+        <div style="margin-bottom: 1rem; font-weight: bold; color: var(--text-muted);">
+            {{ problem.title }}
+        </div>
+        
+        <div class="problem-statement">
+            {{ problem.statement | safe }}
+        </div>
+        
+        {% if already_solved %}
+            <div class="alert alert-success">
+                <strong>Status: Solved!</strong> You have successfully solved this problem and earned your points.
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                <strong>Status: Unsolved</strong> Submit your answer below to earn 100 points!
+            </div>
+        {% endif %}
+        
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+        
+        <h4>Submit Answer</h4>
+        <form method="POST" action="{{ url_for('main.dashboard') }}" style="max-width: 500px; margin-top: 1rem;">
+            <div class="form-group">
+                <input class="form-control" type="text" name="answer" placeholder="Enter your final answer here..." required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Solution</button>
+        </form>
+        
+        {% if submissions %}
+            <h4 style="margin-top: 3rem; margin-bottom: 1rem;">Your Previous Submissions</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Submitted Answer</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in submissions %}
+                        <tr>
+                            <td>{{ sub.submission_time.strftime('%Y-%m-%d %H:%M:%S UTC') }}</td>
+                            <td>{{ sub.answer }}</td>
+                            <td>
+                                {% if sub.is_correct %}
+                                    <span style="color: #2b8a3e; font-weight: bold;">Correct</span>
+                                {% else %}
+                                    <span style="color: #c92a2a; font-weight: bold;">Incorrect</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        
+    {% else %}
+        <div class="alert alert-info">
+            There is currently no active weekly problem. Check back later!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

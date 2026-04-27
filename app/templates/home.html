@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to the ICPC Club Platform</h1>
+    <p>Enhance your problem-solving skills, compete with peers, and prepare for competitive programming contests.</p>
+    {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('main.register') }}" class="btn btn-primary" style="margin-right: 10px;">Join Now</a>
+        <a href="{{ url_for('main.login') }}" class="btn" style="background-color: var(--border-color); color: var(--text-dark);">Login</a>
+    {% else %}
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2 style="color: var(--primary-blue); margin-bottom: 1rem;">About the Club</h2>
+    <p>We are a community of passionate programmers dedicated to algorithms, data structures, and competitive programming. Join us to solve weekly challenges, participate in contests, and improve your coding skills!</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="color: var(--accent-red); margin-bottom: 0.5rem;">Weekly Challenges</h3>
+        <p>Solve new algorithmic problems every week to earn points and climb the leaderboard.</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="color: var(--highlight-yellow); margin-bottom: 0.5rem;">Learn & Grow</h3>
+        <p>Access curated resources, editorials, and guides to master complex algorithms.</p>
+    </div>
+</div>
+{% endblock %}

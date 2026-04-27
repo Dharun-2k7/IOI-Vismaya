@@ -1,0 +1,246 @@
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask_login import login_user, current_user, logout_user, login_required
+from app import db, bcrypt
+from app.models import User, Problem, Submission
+from app.utils import generate_otp, send_otp_email
+import re
+
+main = Blueprint('main', __name__)
+
+@main.route('/')
+def home():
+    return render_template('home.html')
+
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+        
+    if request.method == 'POST':
+        full_name = request.form.get('full_name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        school = request.form.get('school')
+        grade = request.form.get('grade')
+        password = request.form.get('password')
+        
+        # Simple email validation
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            flash('Invalid email address.', 'danger')
+            return redirect(url_for('main.register'))
+            
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if user.is_verified:
+                flash('Email already registered. Please login.', 'danger')
+                return redirect(url_for('main.login'))
+            else:
+                # Resend OTP for unverified existing user
+                otp = generate_otp()
+                user.otp = otp
+                # update password and details if they tried to register again
+                hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+                user.password_hash = hashed_password
+                user.full_name = full_name
+                user.phone_number = phone
+                user.school_name = school
+                user.grade = grade
+                db.session.commit()
+                send_otp_email(user.email, otp)
+                session['verification_email'] = user.email
+                flash('Email already registered but not verified. A new OTP has been sent.', 'info')
+                return redirect(url_for('main.verify'))
+
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        otp = generate_otp()
+        
+        new_user = User(
+            full_name=full_name,
+            email=email,
+            phone_number=phone,
+            school_name=school,
+            grade=grade,
+            password_hash=hashed_password,
+            otp=otp
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        
+        send_otp_email(email, otp)
+        session['verification_email'] = email
+        
+        flash('Account created! Please check your email for the OTP.', 'success')
+        return redirect(url_for('main.verify'))
+        
+    return render_template('register.html')
+
+@main.route('/verify', methods=['GET', 'POST'])
+def verify():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+        
+    email = session.get('verification_email')
+    if not email:
+        flash('Please register first.', 'warning')
+        return redirect(url_for('main.register'))
+        
+    if request.method == 'POST':
+        otp_input = request.form.get('otp')
+        user = User.query.filter_by(email=email).first()
+        
+        if user and user.otp == otp_input:
+            user.is_verified = True
+            user.otp = None # Clear OTP
+            db.session.commit()
+            
+            # Remove from session
+            session.pop('verification_email', None)
+            
+            flash('Email verified successfully! You can now login.', 'success')
+            return redirect(url_for('main.login'))
+        else:
+            flash('Invalid OTP. Please try again.', 'danger')
+            
+    return render_template('verify.html', email=email)
+
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+        
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+        if user and bcrypt.check_password_hash(user.password_hash, password):
+            if not user.is_verified:
+                session['verification_email'] = user.email
+                flash('Please verify your email first. A new OTP has been sent.', 'warning')
+                otp = generate_otp()
+                user.otp = otp
+                db.session.commit()
+                send_otp_email(user.email, otp)
+                return redirect(url_for('main.verify'))
+                
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('main.dashboard'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+            
+    return render_template('login.html')
+
+@main.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('main.home'))
+
+@main.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def dashboard():
+    active_problem = Problem.query.filter_by(is_active=True).first()
+    
+    # Check if user already solved it
+    already_solved = False
+    if active_problem:
+        correct_sub = Submission.query.filter_by(
+            user_id=current_user.id, 
+            problem_id=active_problem.id, 
+            is_correct=True
+        ).first()
+        if correct_sub:
+            already_solved = True
+
+    if request.method == 'POST':
+        if not active_problem:
+            flash('No active problem available right now.', 'warning')
+            return redirect(url_for('main.dashboard'))
+            
+        answer = request.form.get('answer', '').strip()
+        
+        # Check correctness (case-insensitive)
+        is_correct = (answer.lower() == active_problem.correct_answer.lower().strip())
+        
+        submission = Submission(
+            user_id=current_user.id,
+            problem_id=active_problem.id,
+            answer=answer,
+            is_correct=is_correct
+        )
+        db.session.add(submission)
+        
+        if is_correct:
+            if not already_solved:
+                # First time solving, give points
+                current_user.points += 100
+                db.session.commit()
+                flash('Correct answer! You earned 100 points.', 'success')
+            else:
+                db.session.commit()
+                flash('Correct answer! But you have already solved this problem.', 'info')
+        else:
+            db.session.commit()
+            flash('Incorrect answer. Try again!', 'danger')
+            
+        return redirect(url_for('main.dashboard'))
+        
+    # Get all past submissions for this user & problem
+    user_submissions = []
+    if active_problem:
+        user_submissions = Submission.query.filter_by(
+            user_id=current_user.id, 
+            problem_id=active_problem.id
+        ).order_by(Submission.submission_time.desc()).all()
+
+    return render_template('dashboard.html', 
+                           problem=active_problem, 
+                           already_solved=already_solved,
+                           submissions=user_submissions)
+
+@main.route('/leaderboard')
+def leaderboard():
+    active_problem = Problem.query.filter_by(is_active=True).first()
+    
+    leaderboard_data = []
+    
+    if active_problem:
+        # Get users who have solved the problem
+        # We need their first correct submission time
+        
+        # Raw query logic via SQLAlchemy
+        # Join User and Submission
+        correct_subs = Submission.query.filter_by(problem_id=active_problem.id, is_correct=True).all()
+        
+        # Build dictionary to find earliest submission time per user
+        user_stats = {}
+        for sub in correct_subs:
+            if sub.user_id not in user_stats:
+                user_stats[sub.user_id] = sub.submission_time
+            else:
+                if sub.submission_time < user_stats[sub.user_id]:
+                    user_stats[sub.user_id] = sub.submission_time
+                    
+        # Get user details
+        for uid, sub_time in user_stats.items():
+            user = User.query.get(uid)
+            if user:
+                leaderboard_data.append({
+                    'name': user.full_name,
+                    'school': user.school_name,
+                    'points': user.points,
+                    'solve_time': sub_time
+                })
+                
+        # Sort by points (descending), then by solve_time (ascending)
+        leaderboard_data.sort(key=lambda x: (-x['points'], x['solve_time']))
+        
+    return render_template('leaderboard.html', leaderboard=leaderboard_data, problem=active_problem)
+
+@main.route('/team')
+def team():
+    return render_template('team.html')
+
+@main.route('/resources')
+def resources():
+    return render_template('resources.html')

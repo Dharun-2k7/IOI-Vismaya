@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2 style="color: var(--primary-blue); text-align: center; margin-bottom: 2rem;">Weekly Leaderboard</h2>
+    
+    {% if problem %}
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">
+            Current Active Problem: <strong>{{ problem.title }}</strong>
+        </p>
+        
+        {% if leaderboard %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>University / School</th>
+                        <th>Points</th>
+                        <th>First Solve Time (UTC)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in leaderboard %}
+                        <tr>
+                            <td class="
+                                {% if loop.index == 1 %}rank-1{% endif %}
+                                {% if loop.index == 2 %}rank-2{% endif %}
+                                {% if loop.index == 3 %}rank-3{% endif %}
+                            ">
+                                #{{ loop.index }}
+                            </td>
+                            <td style="font-weight: 500;">{{ entry.name }}</td>
+                            <td>{{ entry.school }}</td>
+                            <td style="font-weight: bold; color: var(--primary-blue);">{{ entry.points }}</td>
+                            <td style="font-size: 0.9em; color: var(--text-muted);">{{ entry.solve_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info" style="text-align: center;">
+                No one has solved the current problem yet. Be the first!
+            </div>
+        {% endif %}
+        
+    {% else %}
+        <div class="alert alert-warning" style="text-align: center;">
+            No active problem is currently available to display a leaderboard for.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
