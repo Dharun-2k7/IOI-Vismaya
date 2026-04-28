@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card animate-up delay-1 page-hero">
+    <span class="section-eyebrow">Admin Area</span>
+    <h1 class="text-gradient">Control Panel</h1>
+    <p>Manage problems, set active challenges, and monitor the platform.</p>
+</div>
+
+<div class="grid-2">
+    <!-- Create Problem -->
+    <div class="card animate-up delay-2">
+        <h2 class="text-gradient">Create New Problem</h2>
+        <form method="POST" action="{{ url_for('main.admin_dashboard') }}">
+            <div class="form-group">
+                <label class="form-label">Problem Title</label>
+                <input type="text" name="title" class="form-control" required placeholder="e.g. Two Sum">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Problem Statement (HTML supported)</label>
+                <textarea name="statement" class="form-control" rows="8" required placeholder="<p>Given an array...</p>"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Correct Answer</label>
+                <input type="text" name="correct_answer" class="form-control" required placeholder="0,1">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">Create & Set Active</button>
+        </form>
+    </div>
+
+    <!-- Manage Problems -->
+    <div class="card animate-up delay-3">
+        <h2 class="text-gradient">Manage Problems</h2>
+        
+        <div style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
+            {% for problem in problems %}
+            <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; border-left: 4px solid {% if problem.is_active %}#10b981{% else %}var(--glass-border){% endif %};">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem; color: #fff;">{{ problem.title }}</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Answer: {{ problem.correct_answer }}</p>
+                    </div>
+                    <form method="POST" action="{{ url_for('main.toggle_problem', problem_id=problem.id) }}">
+                        <button type="submit" class="btn {% if problem.is_active %}nav-btn-outline{% else %}btn-primary{% endif %}" style="padding: 0.4rem 1rem; font-size: 0.8rem;">
+                            {% if problem.is_active %}Deactivate{% else %}Make Active{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <p style="color: var(--text-muted); text-align: center;">No problems created yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

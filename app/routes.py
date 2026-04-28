@@ -54,6 +54,9 @@ def register():
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         otp = generate_otp()
         
+        import os
+        is_admin = (email.lower() == os.environ.get('ADMIN_EMAIL', '').lower())
+        
         new_user = User(
             full_name=full_name,
             email=email,
@@ -61,7 +64,8 @@ def register():
             school_name=school,
             grade=grade,
             password_hash=hashed_password,
-            otp=otp
+            otp=otp,
+            is_admin=is_admin
         )
         db.session.add(new_user)
         db.session.commit()
@@ -244,3 +248,52 @@ def team():
 @main.route('/resources')
 def resources():
     return render_template('resources.html')
+
+@main.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin_dashboard():
+    if not current_user.is_admin:
+        flash('You do not have permission to access the admin dashboard.', 'danger')
+        return redirect(url_for('main.home'))
+        
+    if request.method == 'POST':
+        title = request.form.get('title')
+        statement = request.form.get('statement')
+        correct_answer = request.form.get('correct_answer')
+        
+        if title and statement and correct_answer:
+            # Deactivate all other problems when a new one is made active
+            Problem.query.update({Problem.is_active: False})
+            
+            new_problem = Problem(
+                title=title,
+                statement=statement,
+                correct_answer=correct_answer,
+                is_active=True
+            )
+            db.session.add(new_problem)
+            db.session.commit()
+            flash('New problem created and set as active!', 'success')
+            return redirect(url_for('main.admin_dashboard'))
+            
+    problems = Problem.query.order_by(Problem.id.desc()).all()
+    return render_template('admin.html', problems=problems)
+
+@main.route('/admin/toggle/<int:problem_id>', methods=['POST'])
+@login_required
+def toggle_problem(problem_id):
+    if not current_user.is_admin:
+        return redirect(url_for('main.home'))
+        
+    problem = Problem.query.get_or_404(problem_id)
+    if not problem.is_active:
+        # Deactivate all others
+        Problem.query.update({Problem.is_active: False})
+        problem.is_active = True
+        flash(f'Problem "{problem.title}" is now active.', 'success')
+    else:
+        problem.is_active = False
+        flash(f'Problem "{problem.title}" deactivated.', 'info')
+        
+    db.session.commit()
+    return redirect(url_for('main.admin_dashboard'))

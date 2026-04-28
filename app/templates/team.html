@@ -9,12 +9,31 @@
     </p>
 </div>
 
+{% set anime_urls = [
+    "https://cdn.myanimelist.net/images/characters/9/310307.jpg",
+    "https://cdn.myanimelist.net/images/characters/3/100534.jpg",
+    "https://cdn.myanimelist.net/images/characters/5/136769.jpg",
+    "https://cdn.myanimelist.net/images/characters/10/216895.jpg",
+    "https://cdn.myanimelist.net/images/characters/2/284121.jpg",
+    "https://cdn.myanimelist.net/images/characters/9/216897.jpg",
+    "https://cdn.myanimelist.net/images/characters/8/216894.jpg",
+    "https://cdn.myanimelist.net/images/characters/1/279853.jpg",
+    "https://cdn.myanimelist.net/images/characters/8/34400.jpg",
+    "https://cdn.myanimelist.net/images/characters/12/108534.jpg",
+    "https://cdn.myanimelist.net/images/characters/3/36384.jpg",
+    "https://cdn.myanimelist.net/images/characters/9/131317.jpg",
+    "https://cdn.myanimelist.net/images/characters/9/131319.jpg",
+    "https://cdn.myanimelist.net/images/characters/7/284123.jpg",
+    "https://cdn.myanimelist.net/images/characters/14/400666.jpg",
+    "https://cdn.myanimelist.net/images/characters/15/384251.jpg"
+] %}
+
 <div class="grid-4">
-    {% for i in range(1, 16) %}
-    <!-- Team Member {{ i }} -->
+    {% for i in range(0, 16) %}
+    <!-- Team Member {{ i + 1 }} -->
     <div class="card team-card animate-up delay-{{ (i % 4) + 1 }}">
-        <img class="team-avatar" src="https://api.dicebear.com/9.x/lorelei/svg?seed=Person{{ i }}" alt="Person {{ i }}" style="object-fit: cover;" />
-        <h3>Person {{ i }}</h3>
+        <img class="team-avatar" src="{{ anime_urls[i] }}" alt="Person {{ i + 1 }}" style="object-fit: cover;" />
+        <h3>Person {{ i + 1 }}</h3>
         <p>Amrita Vishwa Vidyapeetham</p>
     </div>
     {% endfor %}

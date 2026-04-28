@@ -31,6 +31,9 @@
             <li><a href="{{ url_for('main.team') }}" class="nav-link">Team</a></li>
             <li><a href="{{ url_for('main.resources') }}" class="nav-link">Resources</a></li>
             {% if current_user.is_authenticated %}
+            {% if current_user.is_admin %}
+            <li><a href="{{ url_for('main.admin_dashboard') }}" class="nav-link" style="color: var(--icpc-gold);">Admin</a></li>
+            {% endif %}
             <li><a href="{{ url_for('main.dashboard') }}" class="nav-link">Dashboard</a></li>
             <li><a href="{{ url_for('main.leaderboard') }}" class="nav-link">Leaderboard</a></li>
             <li><a href="{{ url_for('main.logout') }}" class="nav-btn-outline">Logout</a></li>

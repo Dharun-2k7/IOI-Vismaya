@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(60), nullable=False)
     is_verified = db.Column(db.Boolean, default=False)
     otp = db.Column(db.String(6), nullable=True)
+    is_admin = db.Column(db.Boolean, default=False)
     points = db.Column(db.Integer, default=0)
     submissions = db.relationship('Submission', backref='author', lazy=True)
 
