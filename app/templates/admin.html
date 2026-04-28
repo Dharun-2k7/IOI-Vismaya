@@ -59,5 +59,18 @@
             {% endfor %}
         </div>
     </div>
+
+    <!-- Grant Admin Access -->
+    <div class="card animate-up delay-4">
+        <h2 class="text-gradient">Grant Admin Access</h2>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Enter the registered email of the user you want to promote to an administrator.</p>
+        <form method="POST" action="{{ url_for('main.grant_admin') }}">
+            <div class="form-group">
+                <label class="form-label">User Email Address</label>
+                <input type="email" name="email" class="form-control" required placeholder="user@university.edu">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Grant Privilege</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

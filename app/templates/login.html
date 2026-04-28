@@ -15,7 +15,10 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="password">Password</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <label class="form-label" for="password" style="margin-bottom: 0;">Password</label>
+                    <a href="{{ url_for('main.forgot_password') }}" style="font-size: 0.85rem; color: var(--icpc-gold); text-decoration: none;">Forgot Password?</a>
+                </div>
                 <input class="form-control" type="password" id="password" name="password" placeholder="••••••••"
                     required>
             </div>

@@ -135,6 +135,60 @@ def login():
             
     return render_template('login.html')
 
+@main.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+        
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            otp = generate_otp()
+            user.otp = otp
+            db.session.commit()
+            send_otp_email(user.email, otp)
+            session['reset_email'] = user.email
+            flash('If an account with that email exists, an OTP has been sent.', 'info')
+            return redirect(url_for('main.reset_password'))
+        else:
+            # We still show success for security reasons (don't leak registered emails)
+            flash('If an account with that email exists, an OTP has been sent.', 'info')
+            
+    return render_template('forgot_password.html')
+
+@main.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+        
+    email = session.get('reset_email')
+    if not email:
+        flash('Please request a password reset first.', 'warning')
+        return redirect(url_for('main.forgot_password'))
+        
+    if request.method == 'POST':
+        otp_input = request.form.get('otp')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        
+        if user and user.otp == otp_input:
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            user.password_hash = hashed_password
+            user.otp = None # Clear OTP
+            db.session.commit()
+            
+            # Remove from session
+            session.pop('reset_email', None)
+            
+            flash('Password reset successfully! You can now login.', 'success')
+            return redirect(url_for('main.login'))
+        else:
+            flash('Invalid OTP. Please try again.', 'danger')
+            
+    return render_template('reset_password.html', email=email)
+
 @main.route('/logout')
 def logout():
     logout_user()
@@ -296,4 +350,25 @@ def toggle_problem(problem_id):
         flash(f'Problem "{problem.title}" deactivated.', 'info')
         
     db.session.commit()
+    return redirect(url_for('main.admin_dashboard'))
+
+@main.route('/admin/grant', methods=['POST'])
+@login_required
+def grant_admin():
+    if not current_user.is_admin:
+        return redirect(url_for('main.home'))
+        
+    email = request.form.get('email')
+    user = User.query.filter_by(email=email).first()
+    
+    if user:
+        if user.is_admin:
+            flash(f'User {email} is already an admin.', 'info')
+        else:
+            user.is_admin = True
+            db.session.commit()
+            flash(f'Admin privileges successfully granted to {email}!', 'success')
+    else:
+        flash(f'No registered user found with email: {email}', 'danger')
+        
     return redirect(url_for('main.admin_dashboard'))
