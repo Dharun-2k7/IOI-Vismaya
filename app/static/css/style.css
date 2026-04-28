@@ -117,12 +117,12 @@ body {
 }
 
 .brand-highlight {
+    color: var(--icpc-gold); /* Fallback for flicker */
     background: linear-gradient(to right, var(--icpc-gold), var(--icpc-red));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    color: transparent;
-    display: inline-block;
+    transform: translateZ(0);
 }
 
 .navbar-nav {
@@ -227,12 +227,15 @@ body {
     font-weight: 700;
 }
 .text-gradient {
+    color: var(--icpc-gold); /* Fallback for flicker */
     background: linear-gradient(to right, var(--icpc-gold), #fff);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    color: transparent;
-    display: inline-block;
+    transform: translateZ(0);
+}
+.text-gold {
+    color: var(--icpc-gold);
 }
 
 /* Forms */
@@ -598,12 +601,12 @@ body::before {
 }
 
 .brand-highlight {
+    color: var(--icpc-gold); /* Fallback for flicker */
     background: linear-gradient(to right, #fff2cc, var(--icpc-gold));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    color: transparent;
-    display: inline-block;
+    transform: translateZ(0);
 }
 
 .nav-link {
