@@ -10,32 +10,13 @@
 </div>
 
 <div class="grid-4">
-    <!-- Team Member 1 -->
-    <div class="card team-card animate-up delay-1">
-        <div class="team-avatar">H</div>
-        <h3>Hrishikesh</h3>
+    {% for i in range(1, 16) %}
+    <!-- Team Member {{ i }} -->
+    <div class="card team-card animate-up delay-{{ (i % 4) + 1 }}">
+        <img class="team-avatar" src="https://api.dicebear.com/9.x/lorelei/svg?seed=Person{{ i }}" alt="Person {{ i }}" style="object-fit: cover;" />
+        <h3>Person {{ i }}</h3>
         <p>Amrita Vishwa Vidyapeetham</p>
     </div>
-    
-    <!-- Team Member 2 -->
-    <div class="card team-card animate-up delay-2">
-        <div class="team-avatar">A</div>
-        <h3>Abhijit R Pillai</h3>
-        <p>Amrita Vishwa Vidyapeetham</p>
-    </div>
-    
-    <!-- Team Member 3 -->
-    <div class="card team-card animate-up delay-3">
-        <div class="team-avatar">De</div>
-        <h3>Devadathan</h3>
-        <p>Amrita Vishwa Vidyapeetham</p>
-    </div>
-    
-    <!-- Team Member 4 -->
-    <div class="card team-card animate-up delay-4">
-        <div class="team-avatar">Dh</div>
-        <h3>Dharun Kaarthick</h3>
-        <p>Amrita Vishwa Vidyapeetham</p>
-    </div>
+    {% endfor %}
 </div>
 {% endblock %}
