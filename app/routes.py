@@ -330,8 +330,11 @@ def admin_dashboard():
             flash('New problem created and set as active!', 'success')
             return redirect(url_for('main.admin_dashboard'))
             
+    import os
     problems = Problem.query.order_by(Problem.id.desc()).all()
-    return render_template('admin.html', problems=problems)
+    admins = User.query.filter_by(is_admin=True).all()
+    primary_admin_email = os.environ.get('ADMIN_EMAIL', '').lower()
+    return render_template('admin.html', problems=problems, admins=admins, primary_admin_email=primary_admin_email)
 
 @main.route('/admin/toggle/<int:problem_id>', methods=['POST'])
 @login_required
@@ -371,4 +374,25 @@ def grant_admin():
     else:
         flash(f'No registered user found with email: {email}', 'danger')
         
+    return redirect(url_for('main.admin_dashboard'))
+
+@main.route('/admin/revoke/<int:user_id>', methods=['POST'])
+@login_required
+def revoke_admin(user_id):
+    if not current_user.is_admin:
+        return redirect(url_for('main.home'))
+        
+    import os
+    primary_admin_email = os.environ.get('ADMIN_EMAIL', '').lower()
+    
+    user_to_revoke = User.query.get_or_404(user_id)
+    
+    if user_to_revoke.email.lower() == primary_admin_email:
+        flash('The Primary Admin cannot be revoked.', 'danger')
+        return redirect(url_for('main.admin_dashboard'))
+        
+    user_to_revoke.is_admin = False
+    db.session.commit()
+    flash(f'Admin privileges revoked for {user_to_revoke.email}.', 'success')
+    
     return redirect(url_for('main.admin_dashboard'))

@@ -60,17 +60,39 @@
         </div>
     </div>
 
-    <!-- Grant Admin Access -->
+    <!-- Manage Admins -->
     <div class="card animate-up delay-4">
-        <h2 class="text-gradient">Grant Admin Access</h2>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Enter the registered email of the user you want to promote to an administrator.</p>
-        <form method="POST" action="{{ url_for('main.grant_admin') }}">
-            <div class="form-group">
-                <label class="form-label">User Email Address</label>
-                <input type="email" name="email" class="form-control" required placeholder="user@university.edu">
+        <h2 class="text-gradient">Manage Admins</h2>
+        
+        <div style="margin-bottom: 2rem;">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Promote a user to Administrator by entering their email.</p>
+            <form method="POST" action="{{ url_for('main.grant_admin') }}" style="display: flex; gap: 10px;">
+                <input type="email" name="email" class="form-control" required placeholder="user@university.edu" style="flex: 1; margin-bottom: 0;">
+                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.5rem; white-space: nowrap;">Grant Access</button>
+            </form>
+        </div>
+
+        <div style="max-height: 300px; overflow-y: auto; padding-right: 10px; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+            <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-soft);">Current Administrators</h3>
+            {% for admin in admins %}
+            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="margin-bottom: 0.2rem; color: #fff; font-size: 1rem;">{{ admin.full_name }}</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">{{ admin.email }}</p>
+                </div>
+                
+                {% if admin.email.lower() == primary_admin_email %}
+                <span style="font-size: 0.75rem; background: var(--icpc-gold); color: #000; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: bold;">PRIMARY</span>
+                {% else %}
+                <form method="POST" action="{{ url_for('main.revoke_admin', user_id=admin.id) }}" style="margin: 0;">
+                    <button type="submit" class="btn nav-btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.75rem; border-color: #ef4444; color: #ef4444;" onclick="return confirm('Are you sure you want to revoke admin privileges for {{ admin.email }}?');">
+                        Revoke
+                    </button>
+                </form>
+                {% endif %}
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Grant Privilege</button>
-        </form>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1108,12 +1108,13 @@ body {
         position: fixed;
         top: 0;
         right: 0;
-        bottom: 0;
+        height: 100vh;
         width: 250px;
         background: rgba(15, 23, 42, 0.98);
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
         flex-direction: column;
+        align-items: flex-start;
         padding: 5rem 2rem 2rem 2rem;
         gap: 2rem;
         border-left: 1px solid var(--glass-border);
