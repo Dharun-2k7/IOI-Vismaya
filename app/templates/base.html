@@ -39,8 +39,8 @@
             {% if current_user.is_admin %}
             <li><a href="{{ url_for('main.admin_dashboard') }}" class="nav-link" style="color: var(--icpc-gold);">Admin</a></li>
             {% endif %}
-            <li><a href="{{ url_for('main.dashboard') }}" class="nav-link">Problem of the Week</a></li>
-            <li><a href="{{ url_for('main.archives') }}" class="nav-link">Problem Archives</a></li>
+            <li><a href="{{ url_for('main.dashboard') }}" class="nav-link">Problem of the Day</a></li>
+            {# <li><a href="{{ url_for('main.archives') }}" class="nav-link">Problem Archives</a></li> #}
             <li><a href="{{ url_for('main.leaderboard') }}" class="nav-link">Leaderboard</a></li>
             <li><a href="{{ url_for('main.logout') }}" class="nav-btn-outline">Logout</a></li>
             {% else %}
@@ -76,8 +76,8 @@
                     <h4 style="color: #fff; margin-bottom: 1rem; font-size: 1rem;">Platform</h4>
                     <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem;">
                         <li><a href="{{ url_for('main.home') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Home</a></li>
-                        <li><a href="{{ url_for('main.dashboard') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Problem of the Week</a></li>
-                        <li><a href="{{ url_for('main.archives') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Problem Archives</a></li>
+                        <li><a href="{{ url_for('main.dashboard') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Problem of the Day</a></li>
+                        {# <li><a href="{{ url_for('main.archives') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Problem Archives</a></li> #}
                         <li><a href="{{ url_for('main.leaderboard') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Leaderboard</a></li>
                     </ul>
                 </div>

@@ -18,6 +18,10 @@ class User(db.Model, UserMixin):
     otp = db.Column(db.String(6), nullable=True)
     is_admin = db.Column(db.Boolean, default=False)
     points = db.Column(db.Integer, default=0)
+    current_streak = db.Column(db.Integer, default=0)
+    longest_streak = db.Column(db.Integer, default=0)
+    last_solve_date = db.Column(db.Date, nullable=True)
+    last_solve_time = db.Column(db.DateTime, nullable=True)
     submissions = db.relationship('Submission', backref='author', lazy=True)
 
     def __repr__(self):

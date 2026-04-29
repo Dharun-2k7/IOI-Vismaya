@@ -4,7 +4,7 @@ from app import db, bcrypt
 from app.models import User, Problem, Submission
 from app.utils import generate_otp, send_otp_email
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 try:
     from zoneinfo import ZoneInfo
 except ImportError:
@@ -264,6 +264,26 @@ def dashboard():
             if not already_solved:
                 # First time solving, give points
                 current_user.points += 100
+                
+                # Streak logic (convert to IST date for consistency if needed, but UTC date is fine too. Let's use IST date since users are in India)
+                try:
+                    ist = ZoneInfo("Asia/Kolkata")
+                except Exception:
+                    ist = timezone(timedelta(hours=5, minutes=30))
+                today_ist = now.astimezone(ist).date()
+                
+                if current_user.last_solve_date == today_ist:
+                    pass # Already updated streak today
+                elif current_user.last_solve_date == today_ist - timedelta(days=1):
+                    current_user.current_streak += 1
+                else:
+                    current_user.current_streak = 1
+                
+                current_user.last_solve_date = today_ist
+                current_user.last_solve_time = now
+                if current_user.current_streak > current_user.longest_streak:
+                    current_user.longest_streak = current_user.current_streak
+                    
                 db.session.commit()
                 flash('Correct answer! You earned 100 points.', 'success')
             else:
@@ -291,42 +311,15 @@ def dashboard():
 
 @main.route('/leaderboard')
 def leaderboard():
-    active_problem = Problem.query.filter_by(is_active=True).first()
+    # Global Points Leaderboard
+    points_leaderboard = User.query.filter(User.points > 0).order_by(User.points.desc(), User.last_solve_time.asc()).limit(50).all()
     
-    leaderboard_data = []
-    
-    if active_problem:
-        # Get users who have solved the problem
-        # We need their first correct submission time
+    # Global Streak Leaderboard
+    streak_leaderboard = User.query.filter(User.current_streak > 0).order_by(User.current_streak.desc(), User.last_solve_time.asc()).limit(50).all()
         
-        # Raw query logic via SQLAlchemy
-        # Join User and Submission
-        correct_subs = Submission.query.filter_by(problem_id=active_problem.id, is_correct=True).all()
-        
-        # Build dictionary to find earliest submission time per user
-        user_stats = {}
-        for sub in correct_subs:
-            if sub.user_id not in user_stats:
-                user_stats[sub.user_id] = sub.submission_time
-            else:
-                if sub.submission_time < user_stats[sub.user_id]:
-                    user_stats[sub.user_id] = sub.submission_time
-                    
-        # Get user details
-        for uid, sub_time in user_stats.items():
-            user = User.query.get(uid)
-            if user:
-                leaderboard_data.append({
-                    'name': user.full_name,
-                    'school': user.school_name,
-                    'points': user.points,
-                    'solve_time': sub_time
-                })
-                
-        # Sort by points (descending), then by solve_time (ascending)
-        leaderboard_data.sort(key=lambda x: (-x['points'], x['solve_time']))
-        
-    return render_template('leaderboard.html', leaderboard=leaderboard_data, problem=active_problem)
+    return render_template('leaderboard.html', 
+                           points_leaderboard=points_leaderboard,
+                           streak_leaderboard=streak_leaderboard)
 
 @main.route('/team')
 def team():
