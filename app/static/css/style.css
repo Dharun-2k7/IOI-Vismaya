@@ -751,21 +751,77 @@ body::after {
     margin-top: 2rem;
 }
 
-.feature-list {
+/* Sleek Innovative UI (Replaces Feature Boxes) */
+.sleek-section {
+    padding: 2rem 0;
+}
+
+.mega-title-sm {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 3rem;
+    background: linear-gradient(to right, #fff, var(--icpc-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+}
+
+.sleek-list {
     display: flex;
-    flex-direction: column; /* Vertical stack as requested */
-    gap: 1.5rem;
+    flex-direction: column;
+    gap: 3rem;
+    position: relative;
 }
 
-.feature-item h3 {
-    font-size: 1.06rem;
-    margin-bottom: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.sleek-item {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    position: relative;
 }
 
-.feature-item p {
+.item-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--line-strong);
+    opacity: 0.8;
+    min-width: 60px;
+    text-align: right;
+    line-height: 1;
+}
+
+.sleek-item:hover .item-number {
+    color: var(--icpc-gold);
+    -webkit-text-stroke: 0;
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    transition: all 0.3s ease;
+}
+
+.item-content {
+    flex: 1;
+    border-left: 2px solid var(--line);
+    padding-left: 2rem;
+    transition: all 0.3s ease;
+}
+
+.sleek-item:hover .item-content {
+    border-left-color: var(--icpc-gold);
+}
+
+.item-content h3 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.item-content p {
     color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.7;
 }
 
 .syllabus-list {
