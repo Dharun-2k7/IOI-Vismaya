@@ -1221,3 +1221,28 @@ body {
         transform: translateY(-9px) rotate(-45deg);
     }
 }
+
+/* Global Fixes */
+input, textarea, select, button {
+    font-family: inherit;
+}
+
+.problem-box {
+    color: #fff !important;
+}
+
+.problem-box * {
+    color: inherit;
+}
+
+.ql-editor {
+    color: #fff !important;
+}
+
+footer a {
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--icpc-gold) !important;
+}

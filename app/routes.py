@@ -5,8 +5,25 @@ from app.models import User, Problem, Submission
 from app.utils import generate_otp, send_otp_email
 import re
 from datetime import datetime, timezone
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:
+    from backports.zoneinfo import ZoneInfo
 
 main = Blueprint('main', __name__)
+
+@main.app_template_filter('utc_to_ist')
+def utc_to_ist_filter(dt):
+    if not dt:
+        return ""
+    try:
+        ist = ZoneInfo("Asia/Kolkata")
+    except Exception:
+        from datetime import timedelta
+        ist = timezone(timedelta(hours=5, minutes=30))
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(ist).strftime('%Y-%m-%d %I:%M %p IST')
 
 @main.route('/')
 def home():
@@ -350,9 +367,11 @@ def admin_dashboard():
             if scheduled_for_str:
                 is_active = False
                 try:
+                    ist = ZoneInfo("Asia/Kolkata")
                     scheduled_for = datetime.strptime(scheduled_for_str, '%Y-%m-%dT%H:%M')
-                    scheduled_for = scheduled_for.replace(tzinfo=timezone.utc)
-                except ValueError:
+                    # Interpret as IST, then convert to UTC for DB
+                    scheduled_for = scheduled_for.replace(tzinfo=ist).astimezone(timezone.utc)
+                except Exception:
                     pass
                     
             if is_active:
@@ -388,6 +407,7 @@ def toggle_problem(problem_id):
         # Deactivate all others
         Problem.query.update({Problem.is_active: False})
         problem.is_active = True
+        problem.scheduled_for = None # Clear schedule if activated manually
         flash(f'Problem "{problem.title}" is now active.', 'success')
     else:
         problem.is_active = False
@@ -395,6 +415,43 @@ def toggle_problem(problem_id):
         
     db.session.commit()
     return redirect(url_for('main.admin_dashboard'))
+
+@main.route('/admin/edit_problem/<int:problem_id>', methods=['GET', 'POST'])
+@login_required
+def edit_problem(problem_id):
+    if not current_user.is_admin:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for('main.home'))
+        
+    problem = Problem.query.get_or_404(problem_id)
+    ist = ZoneInfo("Asia/Kolkata")
+    
+    if request.method == 'POST':
+        problem.title = request.form.get('title')
+        problem.statement = request.form.get('statement')
+        problem.correct_answer = request.form.get('correct_answer')
+        scheduled_for_str = request.form.get('scheduled_for')
+        
+        if scheduled_for_str:
+            try:
+                scheduled_for = datetime.strptime(scheduled_for_str, '%Y-%m-%dT%H:%M')
+                problem.scheduled_for = scheduled_for.replace(tzinfo=ist).astimezone(timezone.utc)
+                problem.is_active = False # Deactivate if scheduled
+            except Exception:
+                pass
+        else:
+            problem.scheduled_for = None
+            
+        db.session.commit()
+        flash(f"Problem '{problem.title}' updated successfully.", "success")
+        return redirect(url_for('main.admin_dashboard'))
+        
+    scheduled_for_ist_str = ""
+    if problem.scheduled_for:
+        scheduled_for_ist = problem.scheduled_for.replace(tzinfo=timezone.utc).astimezone(ist)
+        scheduled_for_ist_str = scheduled_for_ist.strftime('%Y-%m-%dT%H:%M')
+        
+    return render_template('admin_edit.html', problem=problem, scheduled_for_ist_str=scheduled_for_ist_str)
 
 @main.route('/admin/grant', methods=['POST'])
 @login_required

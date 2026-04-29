@@ -12,17 +12,21 @@
     {% if problems %}
     <div style="display: flex; flex-direction: column; gap: 2rem;">
         {% for problem in problems %}
-        <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border-left: 4px solid var(--icpc-gold);">
-            <h3 style="margin-bottom: 1rem; color: #fff;">{{ problem.title }}</h3>
-            <div class="problem-box" style="margin-top: 0; background: rgba(0,0,0,0.4); border-left: none;">
-                {{ problem.statement | safe }}
+        <details style="background: rgba(255,255,255,0.05); border-radius: 12px; border-left: 4px solid var(--icpc-gold); overflow: hidden; cursor: pointer;">
+            <summary style="padding: 1.5rem 2rem; font-size: 1.2rem; font-weight: 700; color: #fff; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                {{ problem.title }}
+                <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">Click to expand</span>
+            </summary>
+            <div style="padding: 0 2rem 2rem 2rem; cursor: auto;">
+                <div class="problem-box" style="margin-top: 0; background: rgba(0,0,0,0.4); border-left: none;">
+                    {{ problem.statement | safe }}
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border);">
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">For practice purposes only. (Submitting answers to archives is currently disabled in this view, but you can test your code locally!)</p>
+                </div>
             </div>
-            
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border);">
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">For practice purposes only. (Submitting answers to archives is currently disabled in this view, but you can test your code locally!)</p>
-                <!-- If you later want them to submit past problems, you can add a form here pointing to a new route -->
-            </div>
-        </div>
+        </details>
         {% endfor %}
     </div>
     {% else %}

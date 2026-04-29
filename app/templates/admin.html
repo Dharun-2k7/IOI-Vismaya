@@ -104,14 +104,17 @@
                         <h3 style="margin-bottom: 0.5rem; color: #fff;">{{ problem.title }}</h3>
                         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">Answer: {{ problem.correct_answer }}</p>
                         {% if problem.scheduled_for %}
-                        <p style="font-size: 0.8rem; color: var(--icpc-gold);"><i class="icon">⏰</i> Scheduled for: {{ problem.scheduled_for.strftime('%Y-%m-%d %H:%M:%S UTC') }}</p>
+                        <p style="font-size: 0.8rem; color: var(--icpc-gold);"><i class="icon">⏰</i> Scheduled for: {{ problem.scheduled_for | utc_to_ist }}</p>
                         {% endif %}
                     </div>
-                    <form method="POST" action="{{ url_for('main.toggle_problem', problem_id=problem.id) }}">
-                        <button type="submit" class="btn {{ btn_class }}" style="padding: 0.4rem 1rem; font-size: 0.8rem;">
-                            {% if problem.is_active %}Deactivate{% else %}Make Active{% endif %}
-                        </button>
-                    </form>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                        <a href="{{ url_for('main.edit_problem', problem_id=problem.id) }}" class="btn nav-btn-outline" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-color: var(--accent-cyan); color: var(--accent-cyan);">Edit</a>
+                        <form method="POST" action="{{ url_for('main.toggle_problem', problem_id=problem.id) }}">
+                            <button type="submit" class="btn {{ btn_class }}" style="padding: 0.4rem 1rem; font-size: 0.8rem;">
+                                {% if problem.is_active %}Deactivate{% else %}Make Active{% endif %}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             {% else %}
