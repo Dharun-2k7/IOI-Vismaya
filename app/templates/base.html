@@ -33,7 +33,7 @@
         </div>
         <ul class="navbar-nav">
             <li><a href="{{ url_for('main.home') }}" class="nav-link">Home</a></li>
-            <li><a href="{{ url_for('main.team') }}" class="nav-link">Team</a></li>
+            {# <li><a href="{{ url_for('main.team') }}" class="nav-link">Team</a></li> #}
             <li><a href="{{ url_for('main.resources') }}" class="nav-link">Resources</a></li>
             {% if current_user.is_authenticated %}
             {% if current_user.is_admin %}
@@ -84,7 +84,7 @@
                 <div>
                     <h4 style="color: #fff; margin-bottom: 1rem; font-size: 1rem;">Community</h4>
                     <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem;">
-                        <li><a href="{{ url_for('main.team') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Team</a></li>
+                        {# <li><a href="{{ url_for('main.team') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Team</a></li> #}
                         <li><a href="{{ url_for('main.resources') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Resources</a></li>
                     </ul>
                 </div>
