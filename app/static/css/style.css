@@ -1462,3 +1462,83 @@ footer a {
 footer a:hover {
     color: var(--icpc-gold) !important;
 }
+
+/* Roadmap UI */
+.roadmap-container {
+    position: relative;
+    padding: 1rem 0;
+    margin-top: 1rem;
+    max-width: 800px;
+}
+
+.roadmap-line {
+    position: absolute;
+    top: 20px;
+    bottom: 30px;
+    left: 24px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--icpc-gold), var(--accent-cyan), var(--icpc-red));
+    z-index: 0;
+}
+
+.roadmap-step {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.roadmap-step:last-child {
+    margin-bottom: 0;
+}
+
+.roadmap-bubble {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 3px solid var(--icpc-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.roadmap-step:hover .roadmap-bubble {
+    transform: scale(1.1);
+}
+
+.roadmap-content {
+    background: rgba(17, 24, 39, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.5rem 2rem;
+    border-radius: 16px;
+    flex-grow: 1;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.roadmap-content:hover {
+    transform: translateX(10px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.roadmap-content h3 {
+    margin-bottom: 0.5rem;
+    color: #fff;
+    font-size: 1.3rem;
+}
+
+.roadmap-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.6;
+}
