@@ -329,6 +329,18 @@ def team():
 def resources():
     return render_template('resources.html')
 
+@main.route('/about')
+def about():
+    return render_template('about.html')
+
+@main.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@main.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacy.html')
+
 @main.route('/archives')
 def archives():
     now = datetime.now(timezone.utc)

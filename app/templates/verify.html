@@ -9,6 +9,9 @@
         <p class="auth-sub">
             We sent a secure 6-digit code to <br><strong style="color: white;">{{ email }}</strong>. 
         </p>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: center;">
+            We use OTP verification to ensure only valid students access submissions.
+        </p>
 
         <form method="POST" action="{{ url_for('main.verify') }}">
             <div class="form-group">

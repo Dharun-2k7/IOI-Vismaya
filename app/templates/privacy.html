@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="sleek-section animate-up delay-1" style="max-width: 800px; margin: 0 auto; padding-top: 4rem;">
+    <span class="section-eyebrow" style="margin-bottom: 1rem; display: inline-block;">Legal</span>
+    <h2 class="mega-title-sm">Privacy Policy</h2>
+    
+    <div class="card" style="margin-top: 2rem; padding: 2.5rem; line-height: 1.8;">
+        <h3 style="color: var(--icpc-gold); margin-bottom: 1rem;">Data Collection</h3>
+        <p style="margin-bottom: 1.5rem;">
+            We only collect basic information necessary for student authentication and verification. This includes your name, email address, phone number, school, and grade. <strong>We do not collect financial or sensitive personal information.</strong>
+        </p>
+
+        <h3 style="color: var(--icpc-gold); margin-bottom: 1rem;">Data Usage</h3>
+        <p style="margin-bottom: 1.5rem;">
+            The collected data is used exclusively to:
+        </p>
+        <ul style="list-style: disc; margin-left: 1.5rem; margin-bottom: 1.5rem;">
+            <li>Verify your student status.</li>
+            <li>Maintain your weekly challenge streak and leaderboard rankings.</li>
+            <li>Send One-Time Passwords (OTPs) to secure your account.</li>
+        </ul>
+
+        <h3 style="color: var(--icpc-gold); margin-bottom: 1rem;">Data Protection</h3>
+        <p style="margin-bottom: 1.5rem;">
+            Passwords are securely hashed using modern cryptographic standards (bcrypt). We take reasonable measures to protect your information from unauthorized access.
+        </p>
+
+        <h3 style="color: var(--icpc-gold); margin-bottom: 1rem;">Data Sharing</h3>
+        <p>
+            <strong>We do not share, sell, or distribute user data to any third parties.</strong> All information is kept strictly confidential within the context of the IOI Vismaya educational program.
+        </p>
+    </div>
+</div>
+{% endblock %}
