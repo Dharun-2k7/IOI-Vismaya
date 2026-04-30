@@ -1,10 +1,16 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 
 class Config:
+    REMEMBER_COOKIE_DURATION = timedelta(days=30)
+    REMEMBER_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SECURE = True
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'fallback-secret-key'
     db_url = os.environ.get('POSTGRES_URL') or os.environ.get('DATABASE_URL') or os.environ.get('DATABASE_URI') or 'sqlite:///' + os.path.join(basedir, 'site.db')
     if db_url.startswith("postgres://"):

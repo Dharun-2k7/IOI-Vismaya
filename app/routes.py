@@ -145,7 +145,7 @@ def login():
                 send_otp_email(user.email, otp)
                 return redirect(url_for('main.verify'))
                 
-            login_user(user)
+            login_user(user, remember=True)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.dashboard'))
         else:
